@@ -1,0 +1,84 @@
+{% comment %} sections/main-collection.liquid {% endcomment %}
+<div class="container">
+  
+  <!-- Banner Superior Estilo "Shop" -->
+  <div class="hero-shop-banner" style="background-image: url('{{ collection.image | image_url: width: 1200 }}'); background-size: cover; background-position: center;">
+    <h1>{{ collection.title | default: 'Shop' }}</h1>
+  </div>
+
+  <!-- Barra de Búsqueda y Título Secundario -->
+  <div class="shop-bar">
+    <h2>Give All You Need</h2>
+    <form action="{{ routes.search_url }}" class="search-pill">
+      <input type="text" placeholder="Search on {{ shop.name }}" name="q" value="{{ search.terms | escape }}">
+      <button type="submit">Search</button>
+    </form>
+  </div>
+
+  <!-- Layout Principal -->
+  <div class="shop-layout">
+    
+    <!-- Barra Lateral de Categorías -->
+    <aside class="sidebar-box">
+      <h3 class="sidebar-title">Category</h3>
+      <ul class="category-list">
+        <li class="active">📦 All Products ({{ collection.all_products_count }})</li>
+        {% for link in linklists['main-menu'].links %}
+          <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </aside>
+
+    <!-- Grid de Productos -->
+    <main>
+      <div class="product-grid">
+        {% paginate collection.products by 9 %}
+          {% for product in collection.products %}
+            {% render 'product-card', product: product %}
+          {% else %}
+            {% comment %} Productos de prueba en caso de catálogo vacío {% endcomment %}
+            {% for i in (1..6) %}
+              <div class="product-card">
+                <div class="img-wrapper">
+                  <span class="badge">Other</span>
+                  <div style="width: 80px; height: 80px; background: #ddd; border-radius: 8px;"></div>
+                </div>
+                <div class="product-info">
+                  <h3 class="product-title">Sample Product {{ i }}</h3>
+                  <div class="product-price">$29.90</div>
+                  <div class="product-rating">★ 4.8 (120 Reviews)</div>
+                </div>
+                <div class="product-actions">
+                  <button class="btn-card btn-cart">Add to Cart</button>
+                  <button class="btn-card btn-buy">Buy Now</button>
+                </div>
+              </div>
+            {% endfor %}
+          {% endfor %}
+        {% endpaginate %}
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Banner de Newsletter Oscuro (Ready to Get Our New Stuff?) -->
+  <div class="newsletter-banner">
+    <div>
+      <h2>Ready to Get<br>Our New Stuff?</h2>
+    </div>
+    <div>
+      {% form 'customer', class: 'newsletter-form' %}
+        <input type="email" name="contact[email]" placeholder="Your Email" required>
+        <button type="submit">Send</button>
+      {% endform %}
+    </div>
+  </div>
+
+</div>
+
+{% schema %}
+{
+  "name": "Catálogo Estilo Stuffsus",
+  "settings": []
+}
+{% endschema %}
